@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct ScanView: View {
     @ObservedObject var camera: CameraManager
