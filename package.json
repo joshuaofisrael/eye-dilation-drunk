@@ -1,0 +1,25 @@
+{
+  "name": "eye-dilation-drunk",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "tunnel": "expo start --tunnel"
+  },
+  "dependencies": {
+    "expo": "~57.0.25",
+    "expo-camera": "~57.0.5",
+    "expo-status-bar": "~57.0.1",
+    "jpeg-js": "^0.4.4",
+    "react": "19.2.3",
+    "react-native": "0.86.3"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}

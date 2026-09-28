@@ -1,8 +1,4 @@
-name: Validate project structure
-
-# Honest CI: Linux runners cannot compile iOS apps (no Xcode / iOS SDK).
-# This workflow checks that the Xcode project layout and required sources exist.
-# Build & run on a Mac with Xcode — see README.md.
+name: CI
 
 on:
   push:
@@ -11,74 +7,28 @@ on:
     branches: [main]
 
 jobs:
-  structure:
-    name: Structure & disclaimer checks
+  expo-structure:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Required paths exist
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Required Expo files
         run: |
-          set -euo pipefail
-          required=(
-            "EyeDilationDrunk.xcodeproj/project.pbxproj"
-            "EyeDilationDrunk/EyeDilationDrunkApp.swift"
-            "EyeDilationDrunk/ContentView.swift"
-            "EyeDilationDrunk/Info.plist"
-            "EyeDilationDrunk/Models/ScanResult.swift"
-            "EyeDilationDrunk/Services/CameraManager.swift"
-            "EyeDilationDrunk/Services/PupilAnalyzer.swift"
-            "EyeDilationDrunk/Views/DisclaimerView.swift"
-            "EyeDilationDrunk/Views/ScanView.swift"
-            "EyeDilationDrunk/Views/ResultView.swift"
-            "EyeDilationDrunk/Views/CameraPreviewView.swift"
-            "EyeDilationDrunk/Assets.xcassets/Contents.json"
-            "README.md"
-          )
-          for f in "${required[@]}"; do
-            if [[ ! -e "$f" ]]; then
-              echo "::error::Missing required path: $f"
-              exit 1
-            fi
-            echo "OK $f"
-          done
-
-      - name: Info.plist camera usage description
-        run: |
-          set -euo pipefail
-          grep -q "NSCameraUsageDescription" EyeDilationDrunk/Info.plist
-          grep -qi "entertainment" EyeDilationDrunk/Info.plist
-          echo "NSCameraUsageDescription present with entertainment wording"
-
-      - name: Bundle identifier in project
-        run: |
-          set -euo pipefail
-          grep -q "com.joshuaisrael.EyeDilationDrunk" EyeDilationDrunk.xcodeproj/project.pbxproj
-          echo "Bundle ID com.joshuaisrael.EyeDilationDrunk found"
-
-      - name: Disclaimer acknowledgment copy present
-        run: |
-          set -euo pipefail
-          grep -q "I understand — for entertainment only" EyeDilationDrunk/Views/DisclaimerView.swift
-          grep -qi "breathalyzer" EyeDilationDrunk/Views/DisclaimerView.swift
-          grep -qi "drinking then driving\|drink and drive" EyeDilationDrunk/Views/DisclaimerView.swift
-          grep -qi "on-device\|nothing uploaded\|never uploaded" EyeDilationDrunk/Views/DisclaimerView.swift
-          grep -qi "entertainment" EyeDilationDrunk/Views/ResultView.swift
-          echo "Disclaimer and privacy copy checks passed"
-
-      - name: Swift sources list in pbxproj
-        run: |
-          set -euo pipefail
-          for name in EyeDilationDrunkApp ContentView DisclaimerView ScanView ResultView CameraPreviewView CameraManager PupilAnalyzer ScanResult; do
-            grep -q "${name}.swift in Sources" EyeDilationDrunk.xcodeproj/project.pbxproj
-            echo "pbxproj sources include ${name}.swift"
-          done
-
-      - name: Document Mac build requirement
-        run: |
-          cat <<'MSG'
-          ✅ Structure validation passed.
-          ℹ️  Full iOS compile requires macOS + Xcode (not available on ubuntu-latest).
-             Open EyeDilationDrunk.xcodeproj on a Mac, set your Development Team, run on a physical iPhone.
-          MSG
+          test -f package.json
+          test -f app.json
+          test -f App.tsx
+          test -f index.ts
+          test -f src/screens/DisclaimerScreen.tsx
+          test -f src/screens/ScanScreen.tsx
+          test -f src/screens/ResultScreen.tsx
+          test -f src/lib/pupilAnalyzer.ts
+          grep -q 'expo-camera' package.json
+          grep -q 'enableTorch' src/screens/ScanScreen.tsx
+          grep -q 'I understand — for entertainment only' src/screens/DisclaimerScreen.tsx
+      - name: Install dependencies
+        run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit

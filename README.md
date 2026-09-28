@@ -1,12 +1,36 @@
 # Eye Dilation Drunk
 
-Entertainment iOS app that uses the **rear camera + flashlight** to estimate pupil dilation on-device, then shows a playful **0–100% “drunk probability.”**
+Entertainment app that uses the **camera + flashlight/torch** to estimate pupil dilation **on-device**, then shows a playful **0–100% “drunk probability.”**
 
 **This is not a real alcohol, medical, legal, or safety test.**
 
-Bundle ID: `com.joshuaisrael.EyeDilationDrunk`  
-Platform: iOS 16+ · SwiftUI · AVFoundation · Vision / Core Image  
-Dependencies: none (pure Apple frameworks)
+Primary path: **Expo Go** on a physical iPhone (or Android).  
+Legacy native SwiftUI / AVFoundation project: [`native-ios/`](./native-ios/).
+
+---
+
+## Run in Expo Go (recommended)
+
+1. Install [Expo Go](https://expo.dev/go) on your iPhone.
+2. Clone this repo and install deps:
+
+```bash
+git clone https://github.com/joshuaofisrael/eye-dilation-drunk.git
+cd eye-dilation-drunk
+npm install
+npx expo start --tunnel
+```
+
+3. Scan the QR code shown in the terminal / browser with the iPhone Camera app (or Expo Go).
+4. Acknowledge **“I understand — for entertainment only”**, allow camera, then run a scan.
+
+Torch / flashlight requires a **real device** (simulators usually have no torch).
+
+Same-Wi‑Fi LAN mode (if tunnel is unnecessary):
+
+```bash
+npx expo start
+```
 
 ---
 
@@ -24,28 +48,11 @@ The first screen requires tapping **“I understand — for entertainment only�
 
 ---
 
-## Open in Xcode and run on a physical iPhone
-
-Torch / flashlight requires a **real device** (Simulator has no torch).
-
-1. Copy or clone this project onto a Mac.
-2. Open `EyeDilationDrunk.xcodeproj` in Xcode 15+ (or later).
-3. Select the **EyeDilationDrunk** target → **Signing & Capabilities**.
-4. Choose your **Team** (Apple ID / developer account). Xcode will create a provisioning profile.
-5. Plug in an iPhone, trust the computer if prompted, select that device as the run destination.
-6. Build & Run (⌘R).
-7. On first launch, acknowledge the disclaimer, then allow **Camera** when prompted.
-8. Hold the phone so one eye is centered in the guide ring, tap **Start entertainment scan**. The torch turns on during the scan.
-
-If the app won’t launch on device: Settings → General → VPN & Device Management → trust your developer certificate.
-
----
-
 ## How the entertainment estimate works
 
-1. Rear camera preview with an eye alignment guide.
-2. Torch turns on; a still frame is captured.
-3. On-device analysis (Vision face landmarks when possible, otherwise a center-crop brightness heuristic) estimates a **pupil-to-iris ratio**.
+1. Back camera preview with an eye alignment reticle.
+2. Torch turns on; a still frame is captured via `expo-camera` (`CameraView` + `enableTorch` + `takePictureAsync`).
+3. On-device JS heuristic (center crop + darkness / contrast radial analysis with `jpeg-js`) estimates a **pupil-to-iris ratio**.
 4. That approximate ratio is mapped to a fun **0–100%** score with clear “entertainment” labeling.
 
 Lighting, eye color, contacts, medication, and many other factors affect pupils. **None of this equals intoxication measurement.**
@@ -55,32 +62,47 @@ Lighting, eye color, contacts, medication, and many other factors affect pupils.
 ## Project layout
 
 ```
-EyeDilationDrunk/
-├── EyeDilationDrunk.xcodeproj/     # Xcode project
-├── EyeDilationDrunk/
-│   ├── EyeDilationDrunkApp.swift   # @main entry
-│   ├── ContentView.swift           # Navigation / screens
-│   ├── Info.plist                  # NSCameraUsageDescription
-│   ├── Assets.xcassets/
-│   ├── Models/
-│   │   └── ScanResult.swift        # Fun score mapping
-│   ├── Services/
-│   │   ├── CameraManager.swift     # AVFoundation + torch
-│   │   └── PupilAnalyzer.swift     # On-device pupil heuristic
-│   └── Views/
-│       ├── DisclaimerView.swift
-│       ├── ScanView.swift
-│       ├── ResultView.swift
-│       └── CameraPreviewView.swift
-├── .github/workflows/ci.yml        # Structure validation (Linux)
-└── README.md
+├── App.tsx                 # Screen flow (disclaimer → home → scan → result)
+├── app.json                # Expo config + camera permission plugin
+├── package.json
+├── index.ts
+├── src/
+│   ├── lib/
+│   │   ├── scanResult.ts   # Fun 0–100% mapping
+│   │   └── pupilAnalyzer.ts# On-device JPEG heuristic
+│   └── screens/
+│       ├── DisclaimerScreen.tsx
+│       ├── HomeScreen.tsx
+│       ├── ScanScreen.tsx  # CameraView + torch
+│       └── ResultScreen.tsx
+├── assets/
+├── native-ios/             # Original SwiftUI / Xcode project
+└── .github/workflows/ci.yml
 ```
+
+Expo Go compatible only — no custom native modules / no Vision Camera frame processors.
 
 ---
 
-## CI note
+## Scripts
 
-GitHub Actions on Linux **cannot** compile a full iOS app (no Xcode / iOS SDK). The included workflow validates project structure and required files. **Build and run on a Mac with Xcode** as described above.
+| Command | Purpose |
+|--------|---------|
+| `npm start` / `npx expo start` | Dev server (LAN) |
+| `npm run tunnel` / `npx expo start --tunnel` | Dev server with tunnel (QR from anywhere) |
+| `npm run ios` / `npm run android` | Open in simulator / emulator when available |
+
+---
+
+## CI
+
+A free GitHub Actions workflow template lives at [`docs/github-actions-ci.yml`](./docs/github-actions-ci.yml). Copy it to `.github/workflows/ci.yml` on GitHub (or with a token that has the `workflow` scope) to enable structure checks + `npm ci` + typecheck. Full camera/torch verification is on a physical device with Expo Go.
+
+---
+
+## Native iOS (optional)
+
+See [`native-ios/README.md`](./native-ios/README.md) for the original Xcode / SwiftUI app. Prefer Expo Go unless you specifically need the native Vision landmark path.
 
 ---
 

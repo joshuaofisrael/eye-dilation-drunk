@@ -1,25 +1,53 @@
+
+# Expo
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# Metro
+# Misc
+# Native
+# Swift Package Manager
 # Xcode
-DerivedData/
-build/
-*.xcuserstate
-*.xcuserdata/
-*.moved-aside
+# debug
+# dependencies
+# generated native folders
+# local env files
+# macOS
+# typescript
+**/.DS_Store
+*.dSYM
+*.dSYM.zip
 *.hmap
 *.ipa
-*.dSYM.zip
-*.dSYM
-timeline.xctimeline
-playground.xcworkspace
-
-# Swift Package Manager
-.build/
-Packages/
-Package.resolved
+*.jks
+*.key
+*.mobileprovision
+*.moved-aside
+*.orig.*
+*.p12
+*.p8
+*.pem
+*.tsbuildinfo
 *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
-
-# macOS
-.DS_Store
-**/.DS_Store
-
-# Misc
+*.xcuserdata/
+*.xcuserstate
 *.zip
+.DS_Store
+.build/
+.env*.local
+.expo/
+.kotlin/
+.metro-health-check*
+/android
+/ios
+DerivedData/
+Package.resolved
+Packages/
+build/
+dist/
+expo-env.d.ts
+node_modules/
+npm-debug.*
+playground.xcworkspace
+timeline.xctimeline
+web-build/
+yarn-debug.*
+yarn-error.*

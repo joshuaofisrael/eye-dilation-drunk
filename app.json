@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "Eye Dilation Drunk",
+    "slug": "eye-dilation-drunk",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "eyedilationdrunk",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.joshuaisrael.EyeDilationDrunk",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Eye Dilation Drunk needs the camera for an on-device entertainment pupil scan. Images stay on your phone and are never uploaded."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.FLASHLIGHT"
+      ],
+      "package": "com.joshuaisrael.eyedilationdrunk"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Eye Dilation Drunk to use the camera for an on-device entertainment pupil scan. Eye images stay on your device and are never uploaded.",
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": false
+        }
+      ]
+    ]
+  }
+}
