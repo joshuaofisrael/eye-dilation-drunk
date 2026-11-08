@@ -1,6 +1,8 @@
 # Eye Dilation Drunk
 
-Entertainment app that uses the **camera + flashlight/torch** to estimate pupil dilation **on-device**, then shows a playful **0–100% “drunk probability.”**
+> **This is a gag app.** It was made purely for laughs. The "drunk probability" is a joke, not a measurement. It is **not a real alcohol, sobriety, medical, legal or safety test**. Never use it to decide whether anyone can drive, work, or is impaired. Provided "as is" without warranty; use at your own risk.
+
+Gag / entertainment app that uses the **camera + flashlight/torch** to estimate pupil dilation **on-device**, then shows a playful **0–100% “drunk probability.”**
 
 **This is not a real alcohol, medical, legal, or safety test.**
 
